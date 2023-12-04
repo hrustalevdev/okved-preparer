@@ -15,6 +15,8 @@ export interface IOkvedItem {
   code: string;
   name: string;
   items?: IOkvedItem[];
+
+  addChild(child: IOkvedItem): void;
 }
 
 export class OkvedItem implements IOkvedItem {
