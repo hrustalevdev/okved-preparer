@@ -1,7 +1,20 @@
-import fs from "fs";
 import path from "path";
-import iconv from "iconv-lite";
+import { getCsvFilePath } from "./lib/getCsvFilePath";
+import { JsonOkvedCreator } from "./lib/JsonOkvedCreator";
+import type { IJsonOkvedCreatorOptions } from "./lib/JsonOkvedCreator";
 
-const inputFile = path.resolve(__dirname, "csv", "okved2_1251.csv");
-const str = iconv.decode(fs.readFileSync(inputFile), "win1251");
-console.log(">>>RECORDS: ", str);
+const ioDirPath = path.resolve(__dirname, "IO");
+const csvPath = getCsvFilePath(ioDirPath);
+
+if (csvPath) {
+  const options: IJsonOkvedCreatorOptions = {
+    csvPath,
+    jsonSavingPaths: {
+      flat: path.resolve(__dirname, "IO", "okved2Flat.json"),
+      tree: path.resolve(__dirname, "IO", "okved2Tree.json"),
+    },
+  };
+
+  const jsonOkvedCreator = new JsonOkvedCreator(options);
+  jsonOkvedCreator.create();
+}
