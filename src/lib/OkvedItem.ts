@@ -7,33 +7,89 @@ enum EOkvedType {
   Kind = "kind",
 }
 
-export class OkvedItem {
+export interface IOkvedItem {
   id: string;
+  parentId: string;
+  type: EOkvedType;
   section: string;
   code: string;
   name: string;
+  items?: IOkvedItem[];
+}
+
+export class OkvedItem implements IOkvedItem {
+  id: string;
+  parentId: string;
   type: EOkvedType;
+  section: string;
+  code: string;
+  name: string;
+  items?: IOkvedItem[];
+
+  addChild(child: IOkvedItem): void {
+    if (!this.items) {
+      this.items = [];
+    }
+    this.items.push(child);
+  }
 
   constructor(section: string, code: string, name: string) {
-    this.id = `${section}.${code}`;
-    this.section = section;
-    this.code = code;
-    this.name = name;
+    this.id = this._getId(section, code);
+    this.parentId = this._getParentId(section, code);
     this.type = this._getType(code);
+    this.section = section;
+    this.code = code.trim();
+    this.name = name;
+  }
+
+  private _checkCodeType(code: string, type: EOkvedType): boolean {
+    const regexps: Record<EOkvedType, RegExp> = {
+      [EOkvedType.Section]: /^[a-zA-Z]$/,
+      [EOkvedType.Class]: /^\d{2}$/,
+      [EOkvedType.SubClass]: /^\d{2}\.\d$/,
+      [EOkvedType.Group]: /^\d{2}\.\d{2}$/,
+      [EOkvedType.SubGroup]: /^\d{2}\.\d{2}\.\d$/,
+      [EOkvedType.Kind]: /^\d{2}\.\d{2}\.\d{2}$/,
+    };
+
+    return regexps[type].test(code);
+  }
+
+  private _getId(section: string, code: string): string {
+    return code.trim() ? `${section}.${code}` : section;
+  }
+
+  private _getParentId(section: string, code: string): string {
+    switch (true) {
+      case this._checkCodeType(code, EOkvedType.Class):
+        return section;
+      case this._checkCodeType(code, EOkvedType.SubClass):
+        return `${section}.${code.slice(0, -2)}`;
+      case this._checkCodeType(code, EOkvedType.Group):
+        return `${section}.${code.slice(0, -1)}`;
+      case this._checkCodeType(code, EOkvedType.SubGroup):
+        return `${section}.${code.slice(0, -2)}`;
+      case this._checkCodeType(code, EOkvedType.Kind):
+        return `${section}.${code.slice(0, -1)}`;
+      default:
+        return "";
+    }
   }
 
   private _getType(code: string): EOkvedType {
-    const classRegex = /^\d{2}$/;
-    const subClassRegex = /^\d{2}\.\d$/;
-    const groupRegex = /^\d{2}\.\d{2}$/;
-    const subGroupRegex = /^\d{2}\.\d{2}\.\d$/;
-    const kindRegex = /^\d{2}\.\d{2}\.\d{2}$/;
-
-    if (classRegex.test(code)) return EOkvedType.Class;
-    if (subClassRegex.test(code)) return EOkvedType.SubClass;
-    if (groupRegex.test(code)) return EOkvedType.Group;
-    if (subGroupRegex.test(code)) return EOkvedType.SubGroup;
-    if (kindRegex.test(code)) return EOkvedType.Kind;
-    return EOkvedType.Section;
+    switch (true) {
+      case this._checkCodeType(code, EOkvedType.Class):
+        return EOkvedType.Class;
+      case this._checkCodeType(code, EOkvedType.SubClass):
+        return EOkvedType.SubClass;
+      case this._checkCodeType(code, EOkvedType.Group):
+        return EOkvedType.Group;
+      case this._checkCodeType(code, EOkvedType.SubGroup):
+        return EOkvedType.SubGroup;
+      case this._checkCodeType(code, EOkvedType.Kind):
+        return EOkvedType.Kind;
+      default:
+        return EOkvedType.Section;
+    }
   }
 }
