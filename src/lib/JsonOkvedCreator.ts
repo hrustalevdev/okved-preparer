@@ -1,5 +1,5 @@
 import fs from "fs";
-import { buildOkvedsTreeFromCsv } from "./buildOkvedsTreeFromCsv";
+import { buildOkvedTreeFromCsv } from "./buildOkvedTreeFromCsv";
 import { decodeWin1251 } from "./decodeWin1251";
 import type { IOkvedItem } from "./OkvedItem";
 import { parseCsvString } from "./parseCsvString";
@@ -40,7 +40,7 @@ export class JsonOkvedCreator {
     const rows = parseCsvString(str);
 
     this.flat = prepareOkvedItems(rows);
-    this.tree = buildOkvedsTreeFromCsv(csvPath);
+    this.tree = buildOkvedTreeFromCsv(csvPath);
   }
 
   private readonly _jsonFlatPath: string;

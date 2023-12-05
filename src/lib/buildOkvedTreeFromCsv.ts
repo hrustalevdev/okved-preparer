@@ -6,7 +6,7 @@ import type { IOkvedItem } from "./OkvedItem";
 /**
  * @param path - путь к csv-файлу
  */
-export const buildOkvedsTreeFromCsv = (path: string) => {
+export const buildOkvedTreeFromCsv = (path: string) => {
   const tree: IOkvedItem[] = [];
   const idMap = new Map<string, IOkvedItem>();
   const str = decodeWin1251(path);
