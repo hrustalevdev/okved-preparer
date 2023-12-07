@@ -9,7 +9,7 @@ import { EOkvedType, IOkvedItem } from "./OkvedItem";
  */
 export const buildOkvedTreeFromCsv = (
   path: string,
-  level: IOkvedItem["type"] = EOkvedType.Section,
+  level: EOkvedType = EOkvedType.Section,
 ) => {
   const tree: IOkvedItem[] = [];
   const idMap = new Map<string, IOkvedItem>();
