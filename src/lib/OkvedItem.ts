@@ -1,4 +1,4 @@
-enum EOkvedType {
+export enum EOkvedType {
   Section = "section",
   Class = "class",
   SubClass = "subClass",

@@ -1,12 +1,16 @@
 import { decodeWin1251 } from "./decodeWin1251";
 import { parseCsvString } from "./parseCsvString";
 import { prepareOkvedItems } from "./prepareOkvedItems";
-import type { IOkvedItem } from "./OkvedItem";
+import { EOkvedType, IOkvedItem } from "./OkvedItem";
 
 /**
  * @param path - путь к csv-файлу
+ * @param level - с какого уровня начинать построение дерева
  */
-export const buildOkvedTreeFromCsv = (path: string) => {
+export const buildOkvedTreeFromCsv = (
+  path: string,
+  level: IOkvedItem["type"] = EOkvedType.Section,
+) => {
   const tree: IOkvedItem[] = [];
   const idMap = new Map<string, IOkvedItem>();
   const str = decodeWin1251(path);
@@ -22,8 +26,10 @@ export const buildOkvedTreeFromCsv = (path: string) => {
     if (parentId && idMap.has(parentId)) {
       const parentItem = idMap.get(parentId);
       parentItem?.addChild(item);
-    } else {
-      /** Если у элемента нет родителя, добавляем его в корень дерева */
+    }
+
+    /** Построение дерева начинаем с указанного уровня */
+    if (item.type === level) {
       tree.push(item);
     }
   });
