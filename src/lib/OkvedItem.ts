@@ -1,10 +1,10 @@
 export enum EOkvedType {
-  Section = "section",
-  Class = "class",
-  SubClass = "subClass",
-  Group = "group",
-  SubGroup = "subGroup",
-  Kind = "kind",
+  Section = "Section",
+  Class = "Class",
+  SubClass = "SubClass",
+  Group = "Group",
+  SubGroup = "SubGroup",
+  Kind = "Kind",
 }
 
 export interface IOkvedItem {
